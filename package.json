@@ -1,5 +1,5 @@
 {
-  "name": "node-gyp",
+  "name": "node-gyp.js",
   "description": "Node.js native addon build tool",
   "license": "MIT",
   "keywords": [
@@ -11,13 +11,17 @@
     "bindings",
     "gyp"
   ],
-  "version": "3.3.1",
+  "version": "1.0.0",
   "installVersion": 9,
-  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://tootallnate.net)",
+  "author": "Pavel Medvedev <pmedvedev@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nodejs/node-gyp.git"
+    "url": "git://github.com/pmed/node-gyp.js.git"
   },
+  "bugs": {
+    "url": "https://github.com/pmed/node-gyp.js/issues"
+  },
+  "homepage": "https://github.com/pmed/node-gyp.js#readme",
   "preferGlobal": true,
   "bin": "./bin/node-gyp.js",
   "main": "./lib/node-gyp.js",
@@ -25,6 +29,7 @@
     "fstream": "^1.0.0",
     "glob": "^7.0.3",
     "graceful-fs": "^4.1.2",
+    "gyp.js": "^1.0.0",
     "minimatch": "1",
     "mkdirp": "^0.5.0",
     "nopt": "2 || 3",

@@ -1,24 +1,19 @@
-node-gyp
-=========
+node-gyp.js
+===========
 ### Node.js native addon build tool
 
-`node-gyp` is a cross-platform command-line tool written in Node.js for compiling
-native addon modules for Node.js.  It bundles the [gyp](https://code.google.com/p/gyp/)
-project used by the Chromium team and takes away the pain of dealing with the
-various differences in build platforms. It is the replacement to the `node-waf`
-program which is removed for node `v0.8`. If you have a native addon for node that
-still has a `wscript` file, then you should definitely add a `binding.gyp` file
-to support the latest versions of node.
+`node-gyp.js` is a drop in replacement for [`node-gyp`](https://github.com/nodejs/node-gyp),
+a cross-platform command-line tool for compiling native addon modules for Node.js.
 
-Multiple target versions of node are supported (i.e. `0.8`, ..., `4`, `5`, `6`,
-etc.), regardless of what version of node is actually installed on your system
-(`node-gyp` downloads the necessary development files or headers for the target version).
+`node-gyp.js` written in Node.js and uses [gyp.js](https://github.com/indutny/gyp.js)
+project to generate [Ninja](https://ninja-build.org/) build files. Unlike the original
+`node-gyp`, `node-gyp.js` does not requre Python, and uses only
+[Ninja](https://ninja-build.org/) build tool and a C/C++ toolchain
+to build native addon modules for Node.js.
 
-#### Features:
-
- * Easy to use, consistent interface
- * Same commands to build your module on every platform
- * Supports multiple target versions of Node
+Multiple target versions of node are supported, regardless of what version of
+node is actually installed on your system (`node-gyp.js` downloads the necessary
+development files for the target version).
 
 
 Installation
@@ -27,17 +22,15 @@ Installation
 You can install with `npm`:
 
 ``` bash
-$ npm install -g node-gyp
+$ npm install -g node-gyp.js
 ```
 
-You will also need to install:
+You will also need to install [Ninja](https://ninja-build.org/) build tool and a proper
+C/C++ compiler toolchain.
 
   * On Unix:
-    * `python` (`v2.7` recommended, `v3.x.x` is __*not*__ supported)
-    * `make`
-    * A proper C/C++ compiler toolchain, like [GCC](https://gcc.gnu.org)
+    * [GCC](https://gcc.gnu.org)
   * On Mac OS X:
-    * `python` (`v2.7` recommended, `v3.x.x` is __*not*__ supported) (already installed on Mac OS X)
     * [Xcode](https://developer.apple.com/xcode/download/)
       * You also need to install the `Command Line Tools` via Xcode. You can find this under the menu `Xcode -> Preferences -> Downloads`
       * This step will install `gcc` and the related toolchain containing `make`
@@ -49,29 +42,6 @@ You will also need to install:
 
       > :bulb: [Windows Vista / 7 only] requires [.NET Framework 4.5.1](http://www.microsoft.com/en-us/download/details.aspx?id=40773)
 
-    * Install [Python 2.7](https://www.python.org/downloads/) (`v3.x.x` is not supported), and run `npm config set python python2.7` (or see below for further instructions on specifying the proper Python version and path.)
-    * Launch cmd, `npm config set msvs_version 2015`
-
-    If the above steps didn't work for you, please visit [Microsoft's Node.js Guidelines for Windows](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md#compiling-native-addon-modules) for additional tips.
-
-If you have multiple Python versions installed, you can identify which Python
-version `node-gyp` uses by setting the '--python' variable:
-
-``` bash
-$ node-gyp --python /path/to/python2.7
-```
-
-If `node-gyp` is called by way of `npm` *and* you have multiple versions of
-Python installed, then you can set `npm`'s 'python' config key to the appropriate
-value:
-
-``` bash
-$ npm config set python /path/to/executable/python2.7
-```
-
-Note that OS X is just a flavour of Unix and so needs `python`, `make`, and C/C++.
-An easy way to obtain these is to install XCode from Apple,
-and then use it to install the command line tools (under Preferences -> Downloads).
 
 How to Use
 ----------
@@ -92,8 +62,8 @@ $ node-gyp configure
 __Note__: The `configure` step looks for the `binding.gyp` file in the current
 directory to process. See below for instructions on creating the `binding.gyp` file.
 
-Now you will have either a `Makefile` (on Unix platforms) or a `vcxproj` file
-(on Windows) in the `build/` directory. Next invoke the `build` command:
+Now you will have a `build.ninja` file in the `build/` directory. Next invoke
+the `build` command:
 
 ``` bash
 $ node-gyp build
@@ -169,7 +139,6 @@ Command Options
 | `debug`, `--debug`                | Make Debug build (default=Release)
 | `--release`, `--no-debug`         | Make Release build
 | `-C $dir`, `--directory=$dir`     | Run command in different directory
-| `--make=$make`                    | Override make command (e.g. gmake)
 | `--thin=yes`                      | Enable thin static libraries
 | `--arch=$arch`                    | Set target architecture (e.g. ia32)
 | `--tarball=$path`                 | Get headers from a local tarball
@@ -178,9 +147,7 @@ Command Options
 | `--proxy=$url`                    | Set HTTP proxy for downloading header tarball
 | `--cafile=$cafile`                | Override default CA chain (to download tarball)
 | `--nodedir=$path`                 | Set the path to the node binary
-| `--python=$path`                  | Set path to the python (2) binary
 | `--msvs_version=$version`         | Set Visual Studio version (win)
-| `--solution=$solution`            | Set Visual Studio Solution version (win)
 
 
 License
@@ -188,7 +155,9 @@ License
 
 (The MIT License)
 
-Copyright (c) 2012 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+Copyright (c) 2016 Pavel Medvedev <pmedvedev@gmail.com>
+
+Copyright (c) 2012 Nathan Rajlich <nathan@tootallnate.net>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -208,9 +177,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-[python-v2.7.10]: https://www.python.org/downloads/release/python-2710/
-[msvc2013]: https://www.microsoft.com/en-gb/download/details.aspx?id=44914
-[win7sdk]: https://www.microsoft.com/en-us/download/details.aspx?id=8279
-[compiler update for the Windows SDK 7.1]: https://www.microsoft.com/en-us/download/details.aspx?id=4422
